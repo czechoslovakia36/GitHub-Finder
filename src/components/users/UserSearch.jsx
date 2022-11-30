@@ -17,6 +17,8 @@ function UserSearch() {
   const [text,setText]= useState('')
 
   const {users,searchUsers,clearUsers}= useContext(GithubContext)
+
+//   console.log(users)
   const {setAlert} =useContext(AlertContext)
 
 

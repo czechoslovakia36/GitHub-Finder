@@ -16,6 +16,7 @@ export const GithubProvider = ({children}) => {
 
     const initialState= {
         users:[],
+        user: {},
         loading:false
     }
 
@@ -35,8 +36,9 @@ export const GithubProvider = ({children}) => {
             }
         )
       
-        console.log("url is---> " +   `${GITHUB_URL}/search/users?/${params}`)
+        
         const response= await fetch (`${GITHUB_URL}/search/users?${params}`)
+        console.log("url is---> " +   `${GITHUB_URL}/search/users?${params}`)
         const {items} = await response.json()
         // console.log(data)
     
@@ -51,6 +53,48 @@ export const GithubProvider = ({children}) => {
         })
 
     }
+
+    // GET SINGLE USER 
+
+
+    const getUser= async (login) => {
+
+
+        setLoading()
+        
+        const url = `${GITHUB_URL}/users/${login}`
+      
+        const response= await fetch (`${GITHUB_URL}/users/${login}`)
+
+        console.log("single user url is --> " + url)
+
+        if(response.status==404){
+            window.location = '/notfound'
+        }
+        else{
+
+
+            const data = await response.json()
+            // console.log(data)
+        
+            // Commenting these out because we are using useReducer instead of useState
+    
+            // setUsers(data);
+            // setLoading(false);
+    
+            dispatch({
+                type:'GET_USER',
+                payload :data,
+            })
+
+
+        }
+
+       
+
+    }
+
+
     // CLEAR USER FROM STATE
 
     const clearUsers =()=> {
@@ -65,8 +109,10 @@ export const GithubProvider = ({children}) => {
     return <GithubContext.Provider value={{
         users: state.users,
         loading: state.loading,
+        user:state.user,
         searchUsers,
-        clearUsers
+        clearUsers,
+        getUser,
     }}>
     {children}
     </GithubContext.Provider>
